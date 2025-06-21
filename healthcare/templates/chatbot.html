@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Health & Wellness Chatbot{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(to right, #e0f7fa, #e8f5e9);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .chat-container {
+        max-width: 900px;
+        margin: 20px auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 128, 0, 0.1);
+        border-left: 6px solid #66bb6a;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+    }
+
+    .chat-header {
+        padding: 25px 30px 15px;
+    }
+
+    
+
+    p.intro-text {
+        text-align: center;
+        font-size: 16px;
+        color: #4e6e4e;
+        margin: 10px 0 0;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 20px 30px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .input-area {
+        padding: 20px 30px;
+        background: #f8faf9;
+        border-top: 1px solid #e0e0e0;
+        border-radius: 0 0 16px 16px;
+    }
+
+    .input-group {
+        display: flex;
+        width: 100%;
+    }
+
+    .form-control {
+        flex: 1;
+        border-radius: 30px 0 0 30px;
+        border: 1px solid #a5d6a7;
+        padding: 12px 18px;
+        border-right: none;
+        font-size: 15px;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #a5d6a7;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, #43a047, #66bb6a);
+        border: none;
+        border-radius: 0 30px 30px 0;
+        padding: 12px 20px;
+        font-weight: 500;
+        min-width: 100px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #2e7d32, #4caf50);
+    }
+
+    .message {
+        max-width: 80%;
+        padding: 14px 18px;
+        border-radius: 12px;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .user-message {
+        align-self: flex-end;
+        background-color: #c8e6c9;
+        text-align: right;
+        border-radius: 16px 16px 0 16px;
+    }
+
+    .bot-message {
+        align-self: flex-start;
+        background-color: #f1f8e9;
+        border-left: 4px solid #66bb6a;
+        border-radius: 16px 16px 16px 0;
+    }
+
+    .message strong {
+        display: block;
+        font-size: 14px;
+        color: #2e7d32;
+        margin-bottom: 5px;
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #a5d6a7;
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #81c784;
+    }
+    .assistant-header {
+    background: linear-gradient(to right,rgb(42, 159, 108), #66bb6a);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+</style>
+<div class="assistant-header">
+  🩺 Health & Wellness Chatbot
+</div>
+<div class="chat-container">
+    
+    <div class="chat-header">
+        <p class="intro-text">
+            Ask health-related questions about Ayurveda, wellness routines, herbal remedies, or symptoms. Our AI assistant provides personalized guidance.
+        </p>
+    </div>
+
+    <div class="chat-messages">
+        {% if ai_reply %}
+            <!-- User Message -->
+            <div class="message user-message">
+                <strong>You:</strong>
+                {{ user_message }}
+            </div>
+
+            <!-- Bot Response -->
+            <div class="message bot-message">
+                <strong>Bot:</strong>
+                {{ ai_reply|safe }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="input-area">
+        <form method="POST" class="input-group">
+            {% csrf_token %}
+            <input type="text" name="message" class="form-control" placeholder="Ask something about your health..." required>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll to bottom of chat
+    const chatMessages = document.querySelector('.chat-messages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+</script>
+{% endblock %}

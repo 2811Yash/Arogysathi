@@ -1,0 +1,265 @@
+
+
+{% extends "base.html" %}
+{% block title %}Mental Health Support Chatbot{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-color: #5e72e4;
+        --secondary-color: #825ee4;
+        --bot-bubble: #f0f4ff;
+        --user-bubble: #5e72e4;
+        --text-dark: #2d3748;
+        --text-light: #f7fafc;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #f7fafc;
+        color: var(--text-dark);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+
+    .chat-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 85vh;
+    }
+
+    .chat-header {
+        background: linear-gradient(to right, #00796b, #26a69a);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .chat-header h2 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .chat-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .message {
+        max-width: 80%;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bot-message {
+        align-self: flex-start;
+        background-color: var(--bot-bubble);
+        color: var(--text-dark);
+        border-radius: 0 1rem 1rem 1rem;
+        box-shadow: var(--shadow);
+    }
+
+    .user-message {
+        align-self: flex-end;
+        background-color: var(--user-bubble);
+        color: var(--text-light);
+        border-radius: 1rem 1rem 0 1rem;
+    }
+
+    .message strong {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-area {
+        padding: 1.25rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .input-group {
+        display: flex;
+        width: 100%;
+        border-radius: 2rem;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+        flex: 1;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .btn-send {
+       background: linear-gradient(to right, #00796b, #26a69a);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-send:hover {
+        opacity: 0.9;
+    }
+
+    .btn-reset {
+        display: block;
+        margin: 0.5rem auto 0;
+        background: none;
+        border: none;
+        color: #718096;
+        font-size: 0.8rem;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    .btn-reset:hover {
+        color: var(--primary-color);
+    }
+
+    .typing-indicator {
+        display: flex;
+        padding: 1rem;
+        gap: 0.5rem;
+        align-self: flex-start;
+    }
+
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        background: #a0aec0;
+        border-radius: 50%;
+        animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingAnimation {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+
+    /* Markdown styling */
+    .message ul, .message ol {
+        padding-left: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .message li {
+        margin-bottom: 0.25rem;
+    }
+
+    .message strong {
+        font-weight: 600;
+    }
+
+    .message em {
+        font-style: italic;
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #a0aec0;
+    }
+    .assistant-header {
+    background: linear-gradient(to right,rgb(42, 159, 108), #66bb6a);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+</style>
+<div class="assistant-header">
+  🧠 Mental Health Support
+</div>
+<div class="chat-container">
+    <div class="chat-header">
+        <p>Confidential and compassionate support for your emotional well-being</p>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        {% for chat in chat_history %}
+            <div class="message {% if chat.sender == 'bot' %}bot-message{% else %}user-message{% endif %}">
+                <strong>{% if chat.sender == 'bot' %}Support Bot{% else %}You{% endif %}</strong>
+                {{ chat.message|safe }}
+            </div>
+        {% endfor %}
+         
+    </div>
+
+    <div class="input-area">
+        <form method="POST" class="input-group">
+            {% csrf_token %}
+            <input type="text" name="message" class="form-control" placeholder="How are you feeling today?" required>
+            <button type="submit" class="btn-send">Send</button>
+        </form>
+        <a href="{% url 'reset_chat' %}" class="btn-reset">Start New Conversation</a>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll to bottom of chat
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Focus input field on load
+    document.querySelector('.form-control').focus();
+</script>
+{% endblock %} 

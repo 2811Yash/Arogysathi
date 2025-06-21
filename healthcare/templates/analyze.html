@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}Herbal Plant Identifier{% endblock %}
+
+{% block content %}
+<style>
+  .chatbox-wrapper {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.6s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .chatbox-wrapper h2 {
+    text-align: center;
+    color: #00796b;
+    margin-bottom: 1rem;
+    font-size: 1.7rem;
+  }
+
+  .chatbox-wrapper p {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 1.5rem;
+  }
+
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .file-upload label {
+    padding: 0.9rem 1.5rem;
+    border: 2px dashed #00796b;
+    border-radius: 12px;
+    background-color: #e0f2f1;
+    cursor: pointer;
+    color: #00796b;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+
+  .file-upload label:hover {
+    background-color: #b2dfdb;
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  #previewImage {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 1rem;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: opacity 0.4s;
+  }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(to right, #00796b, #26a69a);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(to right, #004d40, #00796b);
+  }
+
+  .response-bubble {
+    margin-top: 2rem;
+    background: #e0f7fa;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .response-bubble::before {
+    content: '🤖';
+    position: absolute;
+    top: -1.2rem;
+    left: 1rem;
+    font-size: 1.4rem;
+  }
+
+  .response-bubble h3 {
+    margin-bottom: 0.8rem;
+    color: #00796b;
+    font-size: 1.1rem;
+  }
+
+  .response-bubble p {
+    color: #333;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .response-bubble img {
+    margin-top: 1rem;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  } .assistant-header {
+    background: linear-gradient(to right,rgb(42, 159, 108), #66bb6a);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+</style>
+<div class="assistant-header">
+  🌿 Herbal Plant Identifier
+</div>
+
+
+<div class="chatbox-wrapper">
+  
+  <p>Upload a plant image and receive instant Ayurvedic insights.</p>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="file-upload">
+      <label for="imageInput">📷 Upload Plant Image</label>
+      <input type="file" id="imageInput" name="image" accept="image/*" onchange="previewImage(event)" required />
+      <img id="previewImage" alt="Preview" />
+      <button type="submit">🔍 Identify Plant</button>
+    </div>
+  </form>
+
+  {% if response %}
+    <div class="response-bubble">
+      <h3>Result:</h3>
+      <p>{{ response }}</p>
+      {% if image_url %}
+        <img src="{{ image_url }}" alt="Identified Plant">
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const img = document.getElementById('previewImage');
+      img.src = reader.result;
+      img.style.display = 'block';
+      img.style.opacity = 0;
+      setTimeout(() => { img.style.opacity = 1; }, 100);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+</script>
+{% endblock %}

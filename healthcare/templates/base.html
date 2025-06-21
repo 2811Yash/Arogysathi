@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}ArogyaSathi{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --secondary: #10b981;
+      --accent: #06b6d4;
+      --bg: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 100%);
+      --sidebar-width: 280px;
+      --text-dark: #1e293b;
+      --text-light: #f8fafc;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --rounded-sm: 0.25rem;
+      --rounded: 0.5rem;
+      --rounded-md: 0.75rem;
+      --rounded-lg: 1rem;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+    }
+
+    body {
+      display: flex;
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      box-shadow: var(--shadow-md);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex-grow: 1;
+    }
+
+    .nav-link {
+      color: var(--text-light);
+      text-decoration: none;
+      padding: 0.9rem 1.2rem;
+      margin: 0.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-radius: var(--rounded);
+      transition: var(--transition);
+      opacity: 0.9;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      opacity: 1;
+      transform: translateX(5px);
+    }
+
+    .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 500;
+    }
+
+    .nav-link i {
+      width: 24px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 2001;
+      font-size: 1.3rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--rounded);
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      display: none;
+    }
+
+    .toggle-btn:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      flex: 1;
+      transition: margin-left 0.3s ease;
+      padding: 2rem 3rem;
+    }
+
+    .content {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark);
+      color: var(--text-light);
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.show {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 2rem 1.5rem;
+      }
+
+      .toggle-btn {
+        display: flex;
+      }
+    }
+
+    /* Animation for sidebar links */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 0.9;
+        transform: translateX(0);
+      }
+    }
+
+    .nav-link {
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .nav-link:nth-child(1) { animation-delay: 0.1s; }
+    .nav-link:nth-child(2) { animation-delay: 0.2s; }
+    .nav-link:nth-child(3) { animation-delay: 0.3s; }
+    .nav-link:nth-child(4) { animation-delay: 0.4s; }
+    .nav-link:nth-child(5) { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+  <!-- Toggle Button (Mobile) -->
+  <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-heartbeat logo-icon"></i>
+      <h2>ArogyaSathi</h2>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/" class="nav-link active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/chat_bot/" class="nav-link">
+        <i class="fas fa-comment-medical"></i>
+        <span>Wellness Assistant</span>
+      </a>
+      <a href="/analyze-image" class="nav-link">
+        <i class="fas fa-camera-retro"></i>
+        <span>Image Analysis</span>
+      </a>
+      <a href="/nutrition/" class="nav-link">
+        <i class="fas fa-utensils"></i>
+        <span>Diet & Nutrition</span>
+      </a>
+      <a href="/mental_health" class="nav-link">
+        <i class="fas fa-brain"></i>
+        <span>Mental Wellness</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main" id="main-content">
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+    
+    <footer>
+      <p>&copy; 2025 ArogyaSathi — Built with <i class="fas fa-heart" style="color: #f87171;"></i> for holistic health</p>
+    </footer>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('main-content');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('show');
+      document.body.classList.toggle('sidebar-open');
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      const isClickInsideSidebar = sidebar.contains(event.target);
+      const isClickOnToggleBtn = event.target.closest('.toggle-btn');
+      
+      if (window.innerWidth <= 992 && !isClickInsideSidebar && !isClickOnToggleBtn) {
+        sidebar.classList.remove('show');
+      }
+    });
+
+    // Set active link
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Close sidebar on mobile after selection
+        if (window.innerWidth <= 992) {
+          sidebar.classList.remove('show');
+        }
+      });
+    });
+
+    // Set initial active link based on current page
+    function setActiveLink() {
+      const currentPath = window.location.pathname;
+      navLinks.forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath === linkPath || 
+            (currentPath.startsWith(linkPath) && linkPath !== '/')) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    // Initialize
+    setActiveLink();
+  </script>
+</body>
+</html>

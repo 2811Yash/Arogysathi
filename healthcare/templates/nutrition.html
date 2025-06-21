@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{% block title %}AI-Powered Diet & Nutrition Assistant{% endblock %}
+
+{% block content %}
+<style>
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+  }
+
+  .chat-container {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .input-area {
+    padding: 1.5rem;
+    background: #f8faf9;
+    border-top: 1px solid #e0e0e0;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .message {
+    max-width: 80%;
+    padding: 1rem 1.2rem;
+    border-radius: 18px;
+    font-size: 1rem;
+    line-height: 1.5;
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .user-message {
+    align-self: flex-end;
+    background: #4CAF50;
+    color: white;
+    border-radius: 18px 18px 0 18px;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  }
+
+  .bot-message {
+    align-self: flex-start;
+    background: #f1f8e9;
+    color: #333;
+    border-radius: 18px 18px 18px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .message-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    object-fit: cover;
+  }
+
+  .upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .file-upload {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .file-upload-label {
+    padding: 0.8rem 1.2rem;
+    background: #e8f5e9;
+    border: 2px dashed #81c784;
+    border-radius: 12px;
+    color: #2e7d32;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .file-upload-label:hover {
+    background: #c8e6c9;
+    border-color: #4CAF50;
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  .prompt-input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    resize: none;
+    min-height: 60px;
+    transition: border 0.3s;
+  }
+
+  .prompt-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  }
+
+  
+
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+    color: #333;
+  }
+
+  .assistant-header {
+    background: linear-gradient(to right,rgb(42, 159, 108), #66bb6a);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+
+  .chat-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    animation: fadeIn 0.5s ease;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  input[type="file"],
+  textarea {
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  button {
+    background: linear-gradient(to right, #388e3c, #26a69a);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(to right, #2e7d32, #00bfa5);
+  }
+
+  .chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .message {
+    max-width: 80%;
+    padding: 1rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    animation: slideUp 0.4s ease;
+  }
+
+  .user-message {
+    align-self: flex-end;
+    background: #c8e6c9;
+    border-radius: 20px 20px 0 20px;
+    text-align: right;
+  }
+
+  .bot-message {
+    align-self: flex-start;
+    background: #e8f5e9;
+    border-left: 4px solid #66bb6a;
+    border-radius: 20px 20px 20px 0;
+  }
+
+  .message strong {
+    font-size: 0.85rem;
+    display: block;
+    color: #2e7d32;
+    margin-bottom: 5px;
+  }
+
+  .image-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 10px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+</style>
+
+<div class="assistant-header">
+  🥗 AI-Powered Diet & Nutrition Assistant
+</div>
+
+<div class="chat-container">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="upload-container">
+        <div class="file-upload">
+          <label for="imageUpload" class="file-upload-label">
+            📷 Upload Food Image (Optional)
+          </label>
+          <input type="file" id="imageUpload" name="image" accept="image/*">
+        </div>
+        <textarea name="message" class="prompt-input" placeholder="Ask me about nutrition, diets, or meal planning..." required></textarea>
+      </div>
+    {% comment %} <div class="upload-container">
+    <input type="file" name="image" accept="image/*" required>
+     </div>
+    <textarea name="message" rows="4" placeholder="e.g., Is this meal good for weight loss?" required>{{ user_message }}</textarea> {% endcomment %}
+    <button type="submit" name="action" value="analyze_and_chat">🔍 Analyze & Get Suggestion</button>
+  </form>
+
+  {% if user_message or ai_reply %}
+  <div class="chat-box">
+    {% if user_message %}
+      <div class="message user-message">
+        <strong>You</strong>
+        {{ user_message }}
+        {% if image_url %}
+          <img src="{{ image_url }}" alt="Uploaded Food" class="image-preview">
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if ai_reply %}
+      <div class="message bot-message">
+        <strong>Bot</strong>
+        {{ ai_reply|safe }}
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
