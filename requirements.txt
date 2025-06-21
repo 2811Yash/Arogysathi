@@ -3,6 +3,7 @@ google-generativeai
 Pillow
 python-dotenv
 markdown
+markdownify
 markdown-it-py
 requests
 groq
