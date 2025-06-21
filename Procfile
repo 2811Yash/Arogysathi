@@ -1,1 +1,1 @@
-web: gunicorn arogysathi.wsgi --log-file -
+web: gunicorn healthcare_bot.wsgi --log-file -
